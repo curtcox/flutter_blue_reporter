@@ -11,23 +11,24 @@ class FindDevicesScreen extends StatelessWidget {
 
   const FindDevicesScreen({Key? key}) : super(key: key);
 
+  ElevatedButton _turnOffButton() =>
+      ElevatedButton(
+        child: const Text('TURN OFF'),
+        style: ElevatedButton.styleFrom(
+          primary: Colors.black,
+          onPrimary: Colors.white,
+        ),
+        onPressed: Platform.isAndroid
+            ? () => FlutterBluePlus.instance.turnOff()
+            : null,
+      );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Find Devices'),
-        actions: [
-          ElevatedButton(
-            child: const Text('TURN OFF'),
-            style: ElevatedButton.styleFrom(
-              primary: Colors.black,
-              onPrimary: Colors.white,
-            ),
-            onPressed: Platform.isAndroid
-                ? () => FlutterBluePlus.instance.turnOff()
-                : null,
-          ),
-        ],
+        actions: [ _turnOffButton()],
       ),
       body: RefreshIndicator(
         onRefresh: () => FlutterBluePlus.instance
@@ -41,27 +42,7 @@ class FindDevicesScreen extends StatelessWidget {
                 initialData: const [],
                 builder: (c, snapshot) => Column(
                   children: snapshot.data!
-                      .map((d) => ListTile(
-                    title: Text(d.name),
-                    subtitle: Text(d.id.toString()),
-                    trailing: StreamBuilder<BluetoothDeviceState>(
-                      stream: d.state,
-                      initialData: BluetoothDeviceState.disconnected,
-                      builder: (c, snapshot) {
-                        if (snapshot.data ==
-                            BluetoothDeviceState.connected) {
-                          return ElevatedButton(
-                            child: const Text('OPEN'),
-                            onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        DeviceScreen(device: d))),
-                          );
-                        }
-                        return Text(snapshot.data.toString());
-                      },
-                    ),
-                  ))
+                      .map((d) => _deviceTile(context, d))
                       .toList(),
                 ),
               ),
@@ -70,16 +51,7 @@ class FindDevicesScreen extends StatelessWidget {
                 initialData: const [],
                 builder: (c, snapshot) => Column(
                   children: snapshot.data!
-                      .map(
-                        (r) => ScanResultTile(
-                      result: r,
-                      onTap: () => Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        r.device.connect();
-                        return DeviceScreen(device: r.device);
-                      })),
-                    ),
-                  )
+                      .map((r) => _scanResultTile(context, r))
                       .toList(),
                 ),
               ),
@@ -92,19 +64,58 @@ class FindDevicesScreen extends StatelessWidget {
         initialData: false,
         builder: (c, snapshot) {
           if (snapshot.data!) {
-            return FloatingActionButton(
-              child: const Icon(Icons.stop),
-              onPressed: () => FlutterBluePlus.instance.stopScan(),
-              backgroundColor: Colors.red,
-            );
+            return _stopButton();
           } else {
-            return FloatingActionButton(
-                child: const Icon(Icons.search),
-                onPressed: () => FlutterBluePlus.instance
-                    .startScan(timeout: const Duration(seconds: 4)));
+            return _searchButton();
           }
         },
       ),
     );
   }
+
+  ScanResultTile _scanResultTile(BuildContext context,ScanResult r) => ScanResultTile(
+    result: r,
+    onTap: () => Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) {
+      r.device.connect();
+      return DeviceScreen(device: r.device);
+    })),
+  );
+
+  ListTile _deviceTile(BuildContext context,BluetoothDevice d) => ListTile(
+    title: Text(d.name),
+    subtitle: Text(d.id.toString()),
+    trailing: StreamBuilder<BluetoothDeviceState>(
+    stream: d.state,
+    initialData: BluetoothDeviceState.disconnected,
+    builder: (c, snapshot) {
+      if (snapshot.data ==
+      BluetoothDeviceState.connected) {
+        return _openButton(context, d);
+      }
+        return Text(snapshot.data.toString());
+      },
+    ),
+  );
+
+  ElevatedButton _openButton(BuildContext context,BluetoothDevice device) => ElevatedButton(
+    child: const Text('OPEN'),
+    onPressed: () => Navigator.of(context).push(
+    MaterialPageRoute(
+    builder: (context) =>
+    DeviceScreen(device: device))),
+  );
+
+  FloatingActionButton _stopButton() => FloatingActionButton(
+    child: const Icon(Icons.stop),
+    onPressed: () => FlutterBluePlus.instance.stopScan(),
+    backgroundColor: Colors.red,
+  );
+
+  FloatingActionButton _searchButton() => FloatingActionButton(
+    child: const Icon(Icons.search),
+    onPressed: () => FlutterBluePlus.instance
+        .startScan(timeout: const Duration(seconds: 4))
+  );
+
 }
