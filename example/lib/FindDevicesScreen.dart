@@ -17,7 +17,7 @@ class FindDevicesScreen extends StatelessWidget {
       floatingActionButton: _searchOrStopButton());
 
   StreamBuilder<bool> _searchOrStopButton() => StreamBuilder<bool>(
-        stream: FlutterBluePlus.instance.isScanning,
+        stream: _isScanning(),
         initialData: false,
         builder: (c, snapshot) =>
             (snapshot.data!) ? _stopButton() : _searchButton(),
@@ -42,7 +42,7 @@ class FindDevicesScreen extends StatelessWidget {
 
   StreamBuilder<List<ScanResult>> _scanResultList(BuildContext context) =>
       StreamBuilder<List<ScanResult>>(
-        stream: FlutterBluePlus.instance.scanResults,
+        stream: _scanResults(),
         initialData: const [],
         builder: (c, snapshot) => Column(
           children:
@@ -72,7 +72,7 @@ class FindDevicesScreen extends StatelessWidget {
           BuildContext context) =>
       StreamBuilder<List<BluetoothDevice>>(
         stream: Stream.periodic(const Duration(seconds: 2))
-            .asyncMap((_) => FlutterBluePlus.instance.connectedDevices),
+            .asyncMap((_) => _connectedDevices()),
         initialData: const [],
         builder: (c, snapshot) => Column(
           children: snapshot.data!.map((d) => _deviceTile(context, d)).toList(),
@@ -86,14 +86,12 @@ class FindDevicesScreen extends StatelessWidget {
 
   FloatingActionButton _stopButton() => FloatingActionButton(
         child: const Icon(Icons.stop),
-        onPressed: () => FlutterBluePlus.instance.stopScan(),
+        onPressed: () => _stopScan(),
         backgroundColor: Colors.red,
       );
 
   FloatingActionButton _searchButton() => FloatingActionButton(
-      child: const Icon(Icons.search),
-      onPressed: () => FlutterBluePlus.instance
-          .startScan(timeout: const Duration(seconds: 4)));
+      child: const Icon(Icons.search), onPressed: () => _startScan());
 
   ElevatedButton _turnOffButton() => ElevatedButton(
         child: const Text('TURN OFF'),
@@ -101,9 +99,7 @@ class FindDevicesScreen extends StatelessWidget {
           primary: Colors.black,
           onPrimary: Colors.white,
         ),
-        onPressed: Platform.isAndroid
-            ? () => FlutterBluePlus.instance.turnOff()
-            : null,
+        onPressed: Platform.isAndroid ? () => _turnOff() : null,
       );
 
   _onOpenButtonPressed(BuildContext context, BluetoothDevice device) {
@@ -118,7 +114,20 @@ class FindDevicesScreen extends StatelessWidget {
     }));
   }
 
-  _onRefresh() {
-    FlutterBluePlus.instance.startScan(timeout: const Duration(seconds: 4));
-  }
+  _onRefresh() => _startScan();
+
+  Stream<bool> _isScanning() => FlutterBluePlus.instance.isScanning;
+
+  Stream<List<ScanResult>> _scanResults() =>
+      FlutterBluePlus.instance.scanResults;
+
+  Future<List<BluetoothDevice>> _connectedDevices() =>
+      FlutterBluePlus.instance.connectedDevices;
+
+  _stopScan() => FlutterBluePlus.instance.stopScan();
+
+  _turnOff() => FlutterBluePlus.instance.turnOff();
+
+  _startScan() =>
+      FlutterBluePlus.instance.startScan(timeout: const Duration(seconds: 4));
 }
