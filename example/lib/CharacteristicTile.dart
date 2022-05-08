@@ -4,6 +4,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'DescriptorTile.dart';
 
 class CharacteristicTile extends StatelessWidget {
+
   final BluetoothCharacteristic characteristic;
   final List<DescriptorTile> descriptorTiles;
   final VoidCallback? onReadPressed;
@@ -72,4 +73,5 @@ class CharacteristicTile extends StatelessWidget {
       },
     );
   }
+
 }

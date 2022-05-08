@@ -5,6 +5,7 @@ import 'BluetoothOffScreen.dart';
 import 'FindDevicesScreen.dart';
 
 class FlutterBlueApp extends StatelessWidget {
+
   const FlutterBlueApp({Key? key}) : super(key: key);
 
   @override
@@ -23,4 +24,5 @@ class FlutterBlueApp extends StatelessWidget {
           }),
     );
   }
+
 }

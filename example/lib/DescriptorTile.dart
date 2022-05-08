@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class DescriptorTile extends StatelessWidget {
+
   final BluetoothDescriptor descriptor;
   final VoidCallback? onReadPressed;
   final VoidCallback? onWritePressed;
@@ -54,4 +55,5 @@ class DescriptorTile extends StatelessWidget {
       ),
     );
   }
+
 }

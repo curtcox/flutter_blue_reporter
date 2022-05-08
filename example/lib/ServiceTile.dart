@@ -4,6 +4,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'CharacteristicTile.dart';
 
 class ServiceTile extends StatelessWidget {
+
   final BluetoothService service;
   final List<CharacteristicTile> characteristicTiles;
 
@@ -35,4 +36,5 @@ class ServiceTile extends StatelessWidget {
       );
     }
   }
+
 }

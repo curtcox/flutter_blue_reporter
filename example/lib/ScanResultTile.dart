@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class ScanResultTile extends StatelessWidget {
+
   const ScanResultTile({Key? key, required this.result, this.onTap})
       : super(key: key);
 
@@ -114,4 +115,5 @@ class ScanResultTile extends StatelessWidget {
       ],
     );
   }
+
 }

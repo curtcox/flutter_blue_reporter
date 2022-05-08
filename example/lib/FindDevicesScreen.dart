@@ -8,6 +8,7 @@ import 'DeviceScreen.dart';
 import 'ScanResultTile.dart';
 
 class FindDevicesScreen extends StatelessWidget {
+
   const FindDevicesScreen({Key? key}) : super(key: key);
 
   @override
