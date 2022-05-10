@@ -8,7 +8,8 @@ import 'DeviceScreen.dart';
 import 'ScanResultTile.dart';
 
 class FindDevicesScreen extends StatelessWidget {
-  const FindDevicesScreen({Key? key}) : super(key: key);
+  const FindDevicesScreen(this._blue, {Key? key}) : super(key: key);
+  final FlutterBluePlus _blue;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -116,18 +117,10 @@ class FindDevicesScreen extends StatelessWidget {
 
   _onRefresh() => _startScan();
 
-  Stream<bool> _isScanning() => FlutterBluePlus.instance.isScanning;
-
-  Stream<List<ScanResult>> _scanResults() =>
-      FlutterBluePlus.instance.scanResults;
-
-  Future<List<BluetoothDevice>> _connectedDevices() =>
-      FlutterBluePlus.instance.connectedDevices;
-
-  _stopScan() => FlutterBluePlus.instance.stopScan();
-
-  _turnOff() => FlutterBluePlus.instance.turnOff();
-
-  _startScan() =>
-      FlutterBluePlus.instance.startScan(timeout: const Duration(seconds: 4));
+  Stream<bool> _isScanning() => _blue.isScanning;
+  Stream<List<ScanResult>> _scanResults() => _blue.scanResults;
+  Future<List<BluetoothDevice>> _connectedDevices() => _blue.connectedDevices;
+  _stopScan() => _blue.stopScan();
+  _turnOff() => _blue.turnOff();
+  _startScan() => _blue.startScan(timeout: const Duration(seconds: 4));
 }
