@@ -37,23 +37,26 @@ class DescriptorTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.file_download,
-              color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
-            ),
-            onPressed: onReadPressed,
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.file_upload,
-              color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
-            ),
-            onPressed: onWritePressed,
-          )
+          _downloadButton(context),
+          _uploadButton(context)
         ],
       ),
     );
   }
 
+  IconButton _downloadButton(BuildContext context) => IconButton(
+    icon: Icon(
+      Icons.file_download,
+      color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
+    ),
+    onPressed: onReadPressed,
+  );
+
+  IconButton _uploadButton(BuildContext context) => IconButton(
+    icon: Icon(
+      Icons.file_upload,
+      color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
+    ),
+    onPressed: onWritePressed,
+  );
 }
