@@ -22,22 +22,27 @@ class BluetoothOffScreen extends StatelessWidget {
               size: 200.0,
               color: Colors.white54,
             ),
-            Text(
-              'Bluetooth Adapter is ${state != null ? state.toString().substring(15) : 'not available'}.',
-              style: Theme.of(context)
-                  .primaryTextTheme
-                  .subtitle2
-                  ?.copyWith(color: Colors.white),
-            ),
-            ElevatedButton(
-              child: const Text('TURN ON'),
-              onPressed: Platform.isAndroid
-                  ? () => FlutterBluePlus.instance.turnOn()
-                  : null,
-            ),
+            _bluetoothAdapterText(context),
+            _turnOnButton(),
           ],
         ),
       ),
     );
   }
+
+  ElevatedButton _turnOnButton() => ElevatedButton(
+    child: const Text('TURN ON'),
+    onPressed: Platform.isAndroid
+        ? () => FlutterBluePlus.instance.turnOn()
+        : null,
+  );
+
+  Text _bluetoothAdapterText(BuildContext context) => Text(
+    'Bluetooth Adapter is ${state != null ? state.toString().substring(15) : 'not available'}.',
+    style: Theme.of(context)
+        .primaryTextTheme
+        .subtitle2
+        ?.copyWith(color: Colors.white),
+  );
+
 }

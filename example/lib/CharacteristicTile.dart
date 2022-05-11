@@ -33,11 +33,7 @@ class CharacteristicTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text('Characteristic'),
-                Text(
-                    '0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}',
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                        color: Theme.of(context).textTheme.caption?.color))
+                const Text('Characteristic'),_uuid(context)
               ],
             ),
             subtitle: Text(value.toString()),
@@ -46,26 +42,9 @@ class CharacteristicTile extends StatelessWidget {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.file_download,
-                  color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                ),
-                onPressed: onReadPressed,
-              ),
-              IconButton(
-                icon: Icon(Icons.file_upload,
-                    color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
-                onPressed: onWritePressed,
-              ),
-              IconButton(
-                icon: Icon(
-                    characteristic.isNotifying
-                        ? Icons.sync_disabled
-                        : Icons.sync,
-                    color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
-                onPressed: onNotificationPressed,
-              )
+              _downloadButton(context),
+              _uploadButton(context),
+              _syncButton(context)
             ],
           ),
           children: descriptorTiles,
@@ -74,4 +53,29 @@ class CharacteristicTile extends StatelessWidget {
     );
   }
 
+  Text _uuid(BuildContext context) => Text(
+      '0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}',
+      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+          color: Theme.of(context).textTheme.caption?.color));
+
+  Color? _color(BuildContext context) => Theme.of(context).iconTheme.color?.withOpacity(0.5);
+
+  IconButton _syncButton(BuildContext context) => IconButton(
+    icon: Icon(
+        characteristic.isNotifying
+            ? Icons.sync_disabled
+            : Icons.sync,
+        color: _color(context)),
+    onPressed: onNotificationPressed,
+  );
+
+  IconButton _uploadButton(BuildContext context) => IconButton(
+    icon: Icon(Icons.file_upload, color: _color(context)),
+    onPressed: onWritePressed,
+  );
+
+  IconButton _downloadButton(BuildContext context) => IconButton(
+    icon: Icon(Icons.file_download, color: _color(context)),
+    onPressed: onReadPressed,
+  );
 }

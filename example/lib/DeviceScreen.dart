@@ -52,35 +52,43 @@ class DeviceScreen extends StatelessWidget {
     onWritePressed: () => d.write(_getRandomBytes()),
   );
 
+  String _text(BluetoothDeviceState? data) {
+    switch (data) {
+      case BluetoothDeviceState.connected:
+        return 'DISCONNECT';
+      case BluetoothDeviceState.disconnected:
+        return 'CONNECT';
+      default:
+        return data.toString().substring(21).toUpperCase();
+    }
+  }
+
+  VoidCallback? _onPressed(BluetoothDeviceState? data) {
+    switch (data) {
+      case BluetoothDeviceState.connected:
+        return () => device.disconnect();
+      case BluetoothDeviceState.disconnected:
+        return () => device.connect();
+      default:
+        return null;
+    }
+  }
+
+  TextButton _snapshotButton(BuildContext context, AsyncSnapshot<BluetoothDeviceState> snapshot) => TextButton(
+      onPressed: _onPressed(snapshot.data),
+      child: Text(
+        _text(snapshot.data),
+        style: Theme.of(context)
+            .primaryTextTheme
+            .button
+            ?.copyWith(color: Colors.white),
+      ));
+
   StreamBuilder _actions(BuildContext context) => StreamBuilder<BluetoothDeviceState>(
     stream: device.state,
     initialData: BluetoothDeviceState.connecting,
     builder: (c, snapshot) {
-      VoidCallback? onPressed;
-      String text;
-      switch (snapshot.data) {
-        case BluetoothDeviceState.connected:
-          onPressed = () => device.disconnect();
-          text = 'DISCONNECT';
-          break;
-        case BluetoothDeviceState.disconnected:
-          onPressed = () => device.connect();
-          text = 'CONNECT';
-          break;
-        default:
-          onPressed = null;
-          text = snapshot.data.toString().substring(21).toUpperCase();
-          break;
-      }
-      return TextButton(
-          onPressed: onPressed,
-          child: Text(
-            text,
-            style: Theme.of(context)
-                .primaryTextTheme
-                .button
-                ?.copyWith(color: Colors.white),
-          ));
+      return _snapshotButton(context, snapshot);
     },
   );
 
